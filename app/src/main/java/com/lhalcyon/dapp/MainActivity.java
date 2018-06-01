@@ -13,7 +13,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void create(View v){
-
+        //todo create
     }
     public void importMnemonic(View v){
 
