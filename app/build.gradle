@@ -33,15 +33,15 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
     implementation 'org.web3j:core:3.3.1-android'
-//    implementation 'org.bitcoinj:bitcoinj-core:0.14.7'
+    //    implementation 'org.bitcoinj:bitcoinj-core:0.14.7'
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
     implementation 'io.reactivex.rxjava2:rxjava:2.1.9'
     testImplementation 'junit:junit:4.12'
     implementation 'com.android.support:design:26.1.0'
     implementation 'com.android.support:cardview-v7:26.1.0'
     implementation 'io.github.novacrypto:BIP44:0.0.3'
-    implementation 'io.github.novacrypto:BIP32:0.0.9'
+    //    implementation 'io.github.novacrypto:BIP32:0.0.9'
     implementation 'io.github.novacrypto:BIP39:0.1.9'
     implementation 'com.orhanobut:logger:2.1.1'
-
+    implementation project(':bip32')
 }

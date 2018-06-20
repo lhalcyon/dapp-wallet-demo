@@ -1,13 +1,6 @@
 package com.lhalcyon.dapp;
 
-import com.lhalcyon.dapp.manager.InitWalletManager;
-import com.lhalcyon.dapp.model.HLWallet;
-
 import org.junit.Test;
-
-import io.reactivex.Flowable;
-import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
 
 /**
  * <pre>
@@ -22,22 +15,6 @@ public class InitWalletTest {
 
     @Test
     public void testCreateWallet() {
-        Flowable<String> flowable = Flowable.just(mnemonics);
-        flowable.flatMap(new Function<String, Flowable<HLWallet>>() {
-            @Override
-            public Flowable<HLWallet> apply(String s) throws Exception {
-                return InitWalletManager.shared().generateWallet("123", s);
-            }
-        }).subscribe(new Consumer<HLWallet>() {
-            @Override
-            public void accept(HLWallet hlWallet) throws Exception {
-                System.out.println("success");
-            }
-        }, new Consumer<Throwable>() {
-            @Override
-            public void accept(Throwable throwable) throws Exception {
-                System.out.println("failure");
-            }
-        });
+
     }
 }

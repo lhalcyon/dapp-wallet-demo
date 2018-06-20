@@ -1,9 +1,14 @@
 package com.lhalcyon.dapp.manager;
 
+import android.content.Context;
+
 import com.lhalcyon.dapp.model.HLWallet;
+import com.orhanobut.logger.Logger;
 
 import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.Keys;
+import org.web3j.crypto.Wallet;
+import org.web3j.crypto.WalletFile;
 
 import java.security.SecureRandom;
 
@@ -28,7 +33,8 @@ public class InitWalletManager {
 
 
     /**
-     * @return 生成一组随机的助记词
+     * generate a random group of mnemonics
+     * 生成一组随机的助记词 
      */
     public Flowable<String> generateMnemonics() {
         StringBuilder sb = new StringBuilder();
@@ -37,46 +43,65 @@ public class InitWalletManager {
         new MnemonicGenerator(English.INSTANCE)
                 .createMnemonic(entropy, sb::append);
         String mnemonics = sb.toString();
-//        Logger.w("助记词:" + mnemonics);
         return Flowable.just(mnemonics);
     }
 
-    public Flowable<HLWallet> generateWallet(String password, String theMnemonics) {
-        Flowable<String> flowable = Flowable.just(theMnemonics);
+    /**
+     * 
+     * @param context app context 上下文
+     * @param password the wallet password(not the bip39 password) 钱包密码(而不是BIP39的密码)
+     * @param mnemonics 助记词
+     * @return wallet 钱包
+     */
+    public Flowable<HLWallet> generateWallet(Context context, String password, String mnemonics) {
+        Flowable<String> flowable = Flowable.just(mnemonics);
 
         return flowable
-                .map(mnemonics -> {
-                    // eth
-                    AddressIndex addressIndex = BIP44
-                            .m()
-                            .purpose44()
-                            .coinType(60)
-                            .account(0)
-                            .external()
-                            .address(0);
-                    ExtendedPrivateKey rootKey = ExtendedPrivateKey.fromSeed(new SeedCalculator().calculateSeed(mnemonics, ""), Bitcoin.MAIN_NET);
-                    System.out.println("mnemonics:"+mnemonics);
-                    String extendedBase58 = rootKey.extendedBase58();
-                    System.out.println("extendedBase58:"+extendedBase58);
-
-                    ExtendedPrivateKey childPrivateKey = rootKey.derive(addressIndex, AddressIndex.DERIVATION);
-                    String childExtendedBase58 = childPrivateKey.extendedBase58();
-
-                    ECKeyPair ecKeyPair = Keys.deserialize(childPrivateKey.extendedKeyByteArray());
-                    String privateKey = ecKeyPair.getPrivateKey().toString(16);
-                    String publicKey = ecKeyPair.getPublicKey().toString(16);
-                    childPrivateKey.extendedKeyByteArray();
-                    String address = Keys.getAddress(publicKey);
-                    int i = 0;
-
-                    System.out.println("address:"+address);
-//                    System.out.println("publicKey:"+publicKey);
-//                    String fullAddress = "0x"+ Keys.getAddress(childEcKeyPair);
-//                    WalletFile walletFile = Wallet.createLight(password, childEcKeyPair);
-//                    System.out.println("full address:"+fullAddress + " -> 0x");
-
+                .map(s -> {
+                    ECKeyPair keyPair = generateKeyPair(s);
+                    WalletFile walletFile = Wallet.createLight(password, keyPair);
                     return new HLWallet();
                 });
+    }
+
+    /**
+     * generate key pair to create eth wallet
+     * 生成KeyPair , 用于创建钱包
+     */
+    private ECKeyPair generateKeyPair(String mnemonics){
+        // 1. we just need eth wallet for now
+        AddressIndex addressIndex = BIP44
+                .m()
+                .purpose44()
+                .coinType(60)
+                .account(0)
+                .external()
+                .address(0);
+        // 2. calculate seed from mnemonics , then get master/root key
+        ExtendedPrivateKey rootKey = ExtendedPrivateKey.fromSeed(new SeedCalculator().calculateSeed(mnemonics, ""), Bitcoin.MAIN_NET);
+        Logger.i("mnemonics:" + mnemonics);
+        String extendedBase58 = rootKey.extendedBase58();
+        Logger.i("extendedBase58:" + extendedBase58);
+
+        // 3. get child private key deriving from master/root key
+        ExtendedPrivateKey childPrivateKey = rootKey.derive(addressIndex, AddressIndex.DERIVATION);
+        String childExtendedBase58 = childPrivateKey.extendedBase58();
+        Logger.i("childExtendedBase58:" + childExtendedBase58);
+
+        // 4. get key pair
+        byte[] privateKeyBytes = childPrivateKey.getKey();
+        ECKeyPair keyPair = ECKeyPair.create(privateKeyBytes);
+
+        // we 've gotten what we need
+        String privateKey = childPrivateKey.getPrivateKey();
+        String publicKey = childPrivateKey.neuter().getPublicKey();
+        String address = Keys.getAddress(keyPair);
+
+        Logger.i("privateKey:"+privateKey);
+        Logger.i("publicKey:"+publicKey);
+        Logger.i("address:"+"0x"+address);
+
+        return keyPair;
     }
 
 
