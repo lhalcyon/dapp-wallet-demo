@@ -8,6 +8,7 @@ import com.lhalcyon.dapp.R;
 import com.lhalcyon.dapp.bindlite.Perform;
 import com.lhalcyon.dapp.databinding.ActivityInitWalletBinding;
 import com.lhalcyon.dapp.ui.base.BaseActivity;
+import com.lhalcyon.dapp.ui.unlock.UnlockWalletActivity;
 
 /**
  * <pre>
@@ -25,6 +26,7 @@ public class InitWalletActivity extends BaseActivity<ActivityInitWalletBinding> 
                 goCreateWallet();
                 break;
             case R.id.btn_unlock:
+                startActivity(new Intent(mContext, UnlockWalletActivity.class));
                 break;
             default:
                 break;

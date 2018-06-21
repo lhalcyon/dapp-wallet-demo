@@ -81,7 +81,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> {
         mBinding.bnv.setSelectedItemId(navs.get(0));
         mBinding.navView.setNavigationItemSelectedListener(item -> {
             int order = item.getOrder();
-            WalletManager.shared().switchCurrentWallet(mContext,mWallets.get(order));
+            WalletManager.shared().switchCurrentWallet(mContext, mWallets.get(order));
             mBinding.drawerLayout.closeDrawer(Gravity.END);
             return true;
         });
@@ -113,7 +113,8 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> {
 
     private void syncNavigationWallets() {
         List<HLWallet> wallets = WalletManager.shared().getWallets();
-        if (wallets.size() == 0){
+        HLWallet currentWallet = WalletManager.shared().getCurrentWallet(mContext);
+        if (wallets.size() == 0) {
             return;
         }
         Menu menu = mBinding.navView.getMenu();
@@ -126,7 +127,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> {
                     .getMenu()
                     .add(R.id.wallet_group, i, i, HLWalletUtil.shortAddress(hlWallet.getAddress()))
                     .setIcon(R.drawable.ic_wallet)
-                    .setEnabled(true);
+                    .setChecked(hlWallet.getAddress().equalsIgnoreCase(currentWallet.getAddress()));
         }
     }
 
