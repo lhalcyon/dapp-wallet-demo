@@ -11,6 +11,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".ui.MainActivity"
+            android:launchMode="singleTask"
             android:theme="@style/AppTheme.Main"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -21,8 +22,13 @@
         </activity>
 
         <activity
-            android:name=".ui.InitWalletActivity"
-            android:screenOrientation="portrait"/>
+            android:name=".ui.InitWalletActivity"/>
+
+        <activity
+            android:name=".ui.CreateWalletActivity"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"/>
+
+        <activity android:name=".ui.CreateWalletResultActivity"/>
     </application>
 
 </manifest>

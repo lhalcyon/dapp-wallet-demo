@@ -1,5 +1,7 @@
 <resources>
-    <string name="app_name">dapp-wallet-demo</string>
+    <string name="app_name">LToken-demo</string>
     <string name="navigation_drawer_open">open_drawer</string>
     <string name="navigation_drawer_close">close_drawer</string>
+
+
 </resources>

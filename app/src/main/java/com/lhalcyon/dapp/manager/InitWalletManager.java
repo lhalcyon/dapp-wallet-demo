@@ -2,6 +2,7 @@ package com.lhalcyon.dapp.manager;
 
 import android.content.Context;
 
+import com.lhalcyon.dapp.config.Constant;
 import com.lhalcyon.dapp.model.HLWallet;
 import com.orhanobut.logger.Logger;
 
@@ -36,14 +37,13 @@ public class InitWalletManager {
      * generate a random group of mnemonics
      * 生成一组随机的助记词 
      */
-    public Flowable<String> generateMnemonics() {
+    public String generateMnemonics() {
         StringBuilder sb = new StringBuilder();
         byte[] entropy = new byte[Words.TWELVE.byteLength()];
         new SecureRandom().nextBytes(entropy);
         new MnemonicGenerator(English.INSTANCE)
                 .createMnemonic(entropy, sb::append);
-        String mnemonics = sb.toString();
-        return Flowable.just(mnemonics);
+        return sb.toString();
     }
 
     /**
@@ -60,7 +60,9 @@ public class InitWalletManager {
                 .map(s -> {
                     ECKeyPair keyPair = generateKeyPair(s);
                     WalletFile walletFile = Wallet.createLight(password, keyPair);
-                    return new HLWallet();
+                    HLWallet hlWallet = new HLWallet(walletFile);
+                    WalletManager.shared().saveWallet(context,hlWallet);
+                    return hlWallet;
                 });
     }
 
@@ -68,7 +70,7 @@ public class InitWalletManager {
      * generate key pair to create eth wallet
      * 生成KeyPair , 用于创建钱包
      */
-    private ECKeyPair generateKeyPair(String mnemonics){
+    public ECKeyPair generateKeyPair(String mnemonics){
         // 1. we just need eth wallet for now
         AddressIndex addressIndex = BIP44
                 .m()
@@ -77,7 +79,7 @@ public class InitWalletManager {
                 .account(0)
                 .external()
                 .address(0);
-        // 2. calculate seed from mnemonics , then get master/root key
+        // 2. calculate seed from mnemonics , then get master/root key ; Note that the bip39 passphrase we set "" for common
         ExtendedPrivateKey rootKey = ExtendedPrivateKey.fromSeed(new SeedCalculator().calculateSeed(mnemonics, ""), Bitcoin.MAIN_NET);
         Logger.i("mnemonics:" + mnemonics);
         String extendedBase58 = rootKey.extendedBase58();
@@ -99,7 +101,7 @@ public class InitWalletManager {
 
         Logger.i("privateKey:"+privateKey);
         Logger.i("publicKey:"+publicKey);
-        Logger.i("address:"+"0x"+address);
+        Logger.i("address:"+ Constant.PREFIX_16+address);
 
         return keyPair;
     }

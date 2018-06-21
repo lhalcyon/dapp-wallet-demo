@@ -8,4 +8,6 @@ package com.lhalcyon.dapp.config;
  * </pre>
  */
 public interface Constant {
+
+    String PREFIX_16 = "0x";
 }

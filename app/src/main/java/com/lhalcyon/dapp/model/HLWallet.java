@@ -1,35 +1,29 @@
 package com.lhalcyon.dapp.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.lhalcyon.dapp.config.Constant;
+
 import org.web3j.crypto.WalletFile;
 
 public class HLWallet {
 
-    public String mnemonics;
-
-    public String name;
-
-    public String address;
-
     public WalletFile walletFile;
 
+    @JsonIgnore
+    public boolean isCurrent = false;
 
     public HLWallet() {
-    }
 
-
-    public HLWallet(String mnemonics, String name, String address) {
-        this.mnemonics = mnemonics;
-        this.name = name;
-        this.address = address;
-    }
-
-    public boolean hasMnemonics(){
-        return mnemonics != null;
     }
 
     public HLWallet(WalletFile walletFile) {
         this.walletFile = walletFile;
     }
+
+    public String getAddress(){
+        return Constant.PREFIX_16 + this.walletFile.getAddress();
+    }
+
 
 
 }
