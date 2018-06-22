@@ -30,7 +30,8 @@
 
         <activity android:name=".ui.CreateWalletResultActivity"/>
 
-        <activity android:name=".ui.unlock.UnlockWalletActivity"/>
+        <activity android:name=".ui.unlock.UnlockWalletActivity"
+                  android:windowSoftInputMode="stateAlwaysHidden|adjustResize"/>
     </application>
 
 </manifest>

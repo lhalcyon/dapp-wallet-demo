@@ -2,7 +2,6 @@ package com.lhalcyon.dapp.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,7 +15,8 @@ import com.lhalcyon.dapp.manager.WalletManager;
 import com.lhalcyon.dapp.model.HLWallet;
 import com.lhalcyon.dapp.model.event.SwitchWalletEvent;
 import com.lhalcyon.dapp.ui.base.BaseActivity;
-import com.lhalcyon.dapp.util.HLWalletUtil;
+import com.lhalcyon.dapp.ui.base.BaseFragment;
+import com.lhalcyon.dapp.util.StringUtil;
 import com.lhalcyon.dapp.util.qumi.QMUIStatusBarHelper;
 import com.orhanobut.logger.Logger;
 
@@ -51,7 +51,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> {
         });
         mBinding.toolbar.setTitle("");
         setSupportActionBar(mBinding.toolbar);
-        List<Fragment> fragments = Arrays.asList(new MarketFragment(), new WalletFragment(), new SettingsFragment());
+        List<BaseFragment> fragments = Arrays.asList(new MarketFragment(), new WalletFragment(), new SettingsFragment());
         mBinding.viewPager.setAdapter(new FragmentAdapter(getSupportFragmentManager(), fragments));
         syncNavigationWallets();
         mBinding.bnv.setOnNavigationItemSelectedListener(item -> {
@@ -125,7 +125,7 @@ public class MainActivity extends BaseActivity<ActivityMainBinding> {
             HLWallet hlWallet = wallets.get(i);
             mBinding.navView
                     .getMenu()
-                    .add(R.id.wallet_group, i, i, HLWalletUtil.shortAddress(hlWallet.getAddress()))
+                    .add(R.id.wallet_group, i, i, StringUtil.shortAddress(hlWallet.getAddress()))
                     .setIcon(R.drawable.ic_wallet)
                     .setChecked(hlWallet.getAddress().equalsIgnoreCase(currentWallet.getAddress()));
         }

@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Set;
 
 public class WalletManager {
 
@@ -97,6 +98,15 @@ public class WalletManager {
         }
     }
 
+    public boolean isWalletExist(String address) {
+        Set<String> strings = mHLWalletHashMap.keySet();
+        for (String s : strings) {
+            if (s.equalsIgnoreCase(address)){
+                return true;
+            }
+        }
+        return false;
+    }
 
     // ---------------- singleton stuff --------------------------
     public static WalletManager shared() {

@@ -2,13 +2,13 @@ package com.lhalcyon.dapp.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.view.View;
 
 import com.lhalcyon.dapp.R;
 import com.lhalcyon.dapp.bindlite.Perform;
 import com.lhalcyon.dapp.databinding.FragmentSettingsBinding;
 import com.lhalcyon.dapp.ui.base.BaseFragment;
-import com.lhalcyon.dapp.util.SnackBarUtil;
 
 /**
  * <pre>
@@ -25,7 +25,7 @@ public class SettingsFragment extends BaseFragment<FragmentSettingsBinding> {
                 startActivity(new Intent(mContext,InitWalletActivity.class));
                 break;
             case R.id.btn_record:
-                SnackBarUtil.show(mBinding.getRoot(),"holder for now :)");
+                Snackbar.make(mBinding.getRoot(),"Holder for now:)",Snackbar.LENGTH_LONG).show();
                 break;
             default:
                 break;

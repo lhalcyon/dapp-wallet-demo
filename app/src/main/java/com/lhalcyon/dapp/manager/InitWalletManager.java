@@ -4,8 +4,11 @@ import android.content.Context;
 
 import com.lhalcyon.dapp.config.Constant;
 import com.lhalcyon.dapp.model.HLWallet;
+import com.lhalcyon.dapp.stuff.HLError;
+import com.lhalcyon.dapp.stuff.ReplyCode;
 import com.orhanobut.logger.Logger;
 
+import org.spongycastle.util.encoders.Hex;
 import org.web3j.crypto.ECKeyPair;
 import org.web3j.crypto.Keys;
 import org.web3j.crypto.Wallet;
@@ -35,7 +38,7 @@ public class InitWalletManager {
 
     /**
      * generate a random group of mnemonics
-     * 生成一组随机的助记词 
+     * 生成一组随机的助记词
      */
     public String generateMnemonics() {
         StringBuilder sb = new StringBuilder();
@@ -47,13 +50,14 @@ public class InitWalletManager {
     }
 
     /**
-     * 
-     * @param context app context 上下文
-     * @param password the wallet password(not the bip39 password) 钱包密码(而不是BIP39的密码)
+     * @param context   app context 上下文
+     * @param password  the wallet password(not the bip39 password) 钱包密码(而不是BIP39的密码)
      * @param mnemonics 助记词
      * @return wallet 钱包
      */
-    public Flowable<HLWallet> generateWallet(Context context, String password, String mnemonics) {
+    public Flowable<HLWallet> generateWallet(Context context,
+                                             String password,
+                                             String mnemonics) {
         Flowable<String> flowable = Flowable.just(mnemonics);
 
         return flowable
@@ -61,8 +65,26 @@ public class InitWalletManager {
                     ECKeyPair keyPair = generateKeyPair(s);
                     WalletFile walletFile = Wallet.createLight(password, keyPair);
                     HLWallet hlWallet = new HLWallet(walletFile);
-                    WalletManager.shared().saveWallet(context,hlWallet);
+                    WalletManager.shared().saveWallet(context, hlWallet);
                     return hlWallet;
+                });
+    }
+
+    public Flowable<HLWallet> importMnemonic(Context context,
+                                             String password,
+                                             String mnemonics) {
+        Flowable<String> flowable = Flowable.just(mnemonics);
+
+        return flowable
+                .flatMap(s -> {
+                    ECKeyPair keyPair = generateKeyPair(s);
+                    WalletFile walletFile = Wallet.createLight(password, keyPair);
+                    HLWallet hlWallet = new HLWallet(walletFile);
+                    if (WalletManager.shared().isWalletExist(hlWallet.getAddress())) {
+                        return Flowable.error(new HLError(ReplyCode.walletExisted, new Throwable("Wallet existed!")));
+                    }
+                    WalletManager.shared().saveWallet(context, hlWallet);
+                    return Flowable.just(hlWallet);
                 });
     }
 
@@ -70,7 +92,7 @@ public class InitWalletManager {
      * generate key pair to create eth wallet
      * 生成KeyPair , 用于创建钱包
      */
-    public ECKeyPair generateKeyPair(String mnemonics){
+    public ECKeyPair generateKeyPair(String mnemonics) {
         // 1. we just need eth wallet for now
         AddressIndex addressIndex = BIP44
                 .m()
@@ -99,11 +121,29 @@ public class InitWalletManager {
         String publicKey = childPrivateKey.neuter().getPublicKey();
         String address = Keys.getAddress(keyPair);
 
-        Logger.i("privateKey:"+privateKey);
-        Logger.i("publicKey:"+publicKey);
-        Logger.i("address:"+ Constant.PREFIX_16+address);
+        Logger.i("privateKey:" + privateKey);
+        Logger.i("publicKey:" + publicKey);
+        Logger.i("address:" + Constant.PREFIX_16 + address);
 
         return keyPair;
+    }
+
+    public Flowable<HLWallet> importPrivateKey(Context context, String privateKey, String password) {
+        if (privateKey.startsWith(Constant.PREFIX_16)) {
+            privateKey = privateKey.substring(Constant.PREFIX_16.length());
+        }
+        Flowable<String> flowable = Flowable.just(privateKey);
+        return flowable.flatMap(s -> {
+            byte[] privateBytes = Hex.decode(s);
+            ECKeyPair ecKeyPair = ECKeyPair.create(privateBytes);
+            WalletFile walletFile = Wallet.createLight(password, ecKeyPair);
+            HLWallet hlWallet = new HLWallet(walletFile);
+            if (WalletManager.shared().isWalletExist(hlWallet.getAddress())) {
+                return Flowable.error(new HLError(ReplyCode.walletExisted, new Throwable("Wallet existed!")));
+            }
+            WalletManager.shared().saveWallet(context, hlWallet);
+            return Flowable.just(hlWallet);
+        });
     }
 
 

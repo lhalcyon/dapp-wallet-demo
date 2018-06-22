@@ -2,6 +2,7 @@ package com.lhalcyon.dapp.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 import android.view.View;
 
@@ -15,7 +16,6 @@ import com.lhalcyon.dapp.stuff.HLError;
 import com.lhalcyon.dapp.stuff.HLSubscriber;
 import com.lhalcyon.dapp.stuff.ScheduleCompat;
 import com.lhalcyon.dapp.ui.base.BaseActivity;
-import com.lhalcyon.dapp.util.SnackBarUtil;
 
 import io.reactivex.Flowable;
 
@@ -62,18 +62,18 @@ public class CreateWalletActivity extends BaseActivity<ActivityCreateWalletBindi
 
                     @Override
                     protected void failure(HLError error) {
-                        SnackBarUtil.show(mBinding.getRoot(),error.getMessage());
+                        Snackbar.make(mBinding.getRoot(),error.getMessage(),Snackbar.LENGTH_LONG).show();
                     }
                 });
     }
 
     private boolean validateInput(String password, String repassword) {
         if (TextUtils.isEmpty(password) || TextUtils.isEmpty(repassword)){
-            SnackBarUtil.showInMain(mBinding.btnCreate,"please input password");
+            ScheduleCompat.snackInMain(mBinding.getRoot(),"please input password");
             return false;
         }
         if (!TextUtils.equals(password,repassword)){
-            SnackBarUtil.showInMain(mBinding.getRoot(),"password does not match");
+            ScheduleCompat.snackInMain(mBinding.getRoot(),"password does not match");
             return false;
         }
         return true;

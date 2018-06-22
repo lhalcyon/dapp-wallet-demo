@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:bind="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="call"
+            type="com.lhalcyon.dapp.bindlite.Perform&lt;android.view.View&gt;"/>
+
+    </data>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:focusable="true"
+                  android:focusableInTouchMode="true"
+                  android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/et_mnemonic"
+            android:layout_width="match_parent"
+            android:layout_height="160dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="16dp"
+            android:background="@drawable/bg_setup_edit"
+            android:elevation="2dp"
+            android:gravity="top"
+            android:imeOptions="actionNext"
+            android:hint="input your mnemonic"
+            android:inputType="text|textMultiLine"
+            android:padding="12dp"
+            android:textColorHint="#ccc"
+            android:textSize="14dp"/>
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/et_password"
+            android:inputType="textPassword"
+            android:imeOptions="actionNext"
+            android:singleLine="true"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:hint="password"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"/>
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/et_re_password"
+            android:inputType="textPassword"
+            android:imeOptions="actionNext"
+            android:layout_marginTop="6dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:hint="re password"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"/>
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/btn_unlock"
+            bind:click="@{call}"
+            android:text="unlock"
+            android:background="@color/colorAccent"
+            android:textColor="@android:color/white"
+            android:layout_margin="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"/>
+
+    </LinearLayout>
+
+</layout>

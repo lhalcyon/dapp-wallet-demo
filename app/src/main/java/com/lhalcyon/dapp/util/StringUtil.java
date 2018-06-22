@@ -9,7 +9,7 @@ import org.web3j.crypto.WalletUtils;
  * Brief Desc :
  * </pre>
  */
-public class HLWalletUtil {
+public class StringUtil {
 
     public static String shortAddress(String address){
         String shortOfAddress = "unknown";

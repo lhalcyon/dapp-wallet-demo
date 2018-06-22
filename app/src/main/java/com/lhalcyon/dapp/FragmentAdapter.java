@@ -6,6 +6,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import com.lhalcyon.dapp.ui.base.BaseFragment;
+
 import java.util.List;
 
 /**
@@ -17,15 +19,15 @@ import java.util.List;
  */
 public class FragmentAdapter extends FragmentPagerAdapter {
 
-    private List<Fragment> mFragmentList;
+    private List<BaseFragment> mFragmentList;
     private List<String> mIndicatorLabelList;
 
-    public FragmentAdapter(FragmentManager fm, List<Fragment> fragmentList) {
+    public FragmentAdapter(FragmentManager fm, List<BaseFragment> fragmentList) {
         super(fm);
         this.mFragmentList = fragmentList;
     }
 
-    public FragmentAdapter(FragmentManager fm, List<Fragment> fragmentList, List<String> indicatorLabelList) {
+    public FragmentAdapter(FragmentManager fm, List<BaseFragment> fragmentList, List<String> indicatorLabelList) {
         super(fm);
         mFragmentList = fragmentList;
         mIndicatorLabelList = indicatorLabelList;
