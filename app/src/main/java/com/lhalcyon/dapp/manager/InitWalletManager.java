@@ -2,9 +2,11 @@ package com.lhalcyon.dapp.manager;
 
 import android.content.Context;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lhalcyon.dapp.config.Constant;
 import com.lhalcyon.dapp.model.HLWallet;
 import com.lhalcyon.dapp.stuff.HLError;
+import com.lhalcyon.dapp.stuff.LWallet;
 import com.lhalcyon.dapp.stuff.ReplyCode;
 import com.orhanobut.logger.Logger;
 
@@ -144,6 +146,52 @@ public class InitWalletManager {
             WalletManager.shared().saveWallet(context, hlWallet);
             return Flowable.just(hlWallet);
         });
+    }
+
+    /**
+     * web3j的导入Keystore方式,很容易OOM
+     */
+    @Deprecated
+    public Flowable<HLWallet> importKeystoreViaWeb3j(Context context, String keystore, String password) {
+        return Flowable.just(keystore)
+                .flatMap(s -> {
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    WalletFile walletFile = objectMapper.readValue(keystore, WalletFile.class);
+                    ECKeyPair keyPair = Wallet.decrypt(password, walletFile);
+                    HLWallet hlWallet = new HLWallet(walletFile);
+
+                    WalletFile generateWalletFile = Wallet.createLight(password, keyPair);
+                    if (!generateWalletFile.getAddress().equalsIgnoreCase(walletFile.getAddress())) {
+                        return Flowable.error(new HLError(ReplyCode.failure, new Throwable("address doesn't match private key")));
+                    }
+
+                    if (WalletManager.shared().isWalletExist(hlWallet.getAddress())) {
+                        return Flowable.error(new HLError(ReplyCode.walletExisted, new Throwable("Wallet existed!")));
+                    }
+                    WalletManager.shared().saveWallet(context, hlWallet);
+                    return Flowable.just(hlWallet);
+                });
+    }
+
+    public Flowable<HLWallet> importKeystore(Context context, String keystore, String password) {
+        return Flowable.just(keystore)
+                .flatMap(s -> {
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    WalletFile walletFile = objectMapper.readValue(keystore, WalletFile.class);
+                    ECKeyPair keyPair = LWallet.decrypt(password, walletFile);
+                    HLWallet hlWallet = new HLWallet(walletFile);
+
+                    WalletFile generateWalletFile = Wallet.createLight(password, keyPair);
+                    if (!generateWalletFile.getAddress().equalsIgnoreCase(walletFile.getAddress())) {
+                        return Flowable.error(new HLError(ReplyCode.failure, new Throwable("address doesn't match private key")));
+                    }
+
+                    if (WalletManager.shared().isWalletExist(hlWallet.getAddress())) {
+                        return Flowable.error(new HLError(ReplyCode.walletExisted, new Throwable("Wallet existed!")));
+                    }
+                    WalletManager.shared().saveWallet(context, hlWallet);
+                    return Flowable.just(hlWallet);
+                });
     }
 
 

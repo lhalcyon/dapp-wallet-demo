@@ -93,7 +93,7 @@ public abstract class HLSubscriber<T> implements FlowableSubscriber<T> {
 
     @Override
     public void onError(Throwable e) {
-        HLError error = new HLError();
+        HLError error = new HLError(ReplyCode.failure,e);
         failure(error);
         done(false);
     }

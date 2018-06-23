@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="45dp"
             android:background="@color/colorPrimary"
-            app:title="Unlock wallet"
+            app:title="Unlock Wallet"
             app:navigationIcon="@drawable/ic_arrow_left_white"
             app:titleTextColor="@android:color/white"/>
 
