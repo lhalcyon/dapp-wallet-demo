@@ -149,7 +149,7 @@ public class InitWalletManager {
     }
 
     /**
-     * web3j的导入Keystore方式,很容易OOM
+     * web3j的导入Keystore方式,容易OOM
      */
     @Deprecated
     public Flowable<HLWallet> importKeystoreViaWeb3j(Context context, String keystore, String password) {
