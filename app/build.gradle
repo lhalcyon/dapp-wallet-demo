@@ -26,6 +26,11 @@ android {
         targetCompatibility 1.8
         sourceCompatibility 1.8
     }
+
+    lintOptions {
+        abortOnError false
+    }
+
 }
 
 dependencies {
@@ -47,5 +52,6 @@ dependencies {
     implementation 'com.android.support:multidex:1.0.3'
     implementation 'org.greenrobot:eventbus:3.1.1'
     implementation 'com.lambdaworks:scrypt:1.4.0'
-    implementation project(':bip32')
+    implementation 'com.lhalcyon:bip32:1.0.0'
+//    implementation project(':bip32')
 }

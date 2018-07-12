@@ -88,8 +88,6 @@ public class InitWalletTest {
         System.out.println(aFinal);
         String s = Numeric.toHexString(aFinal);
         System.out.println(s);
-
-
     }
 
     @Test

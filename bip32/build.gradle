@@ -1,4 +1,5 @@
 apply plugin: 'java'
+apply plugin: 'com.novoda.bintray-release'
 
 repositories {
     maven {
@@ -28,3 +29,13 @@ dependencies {
     testCompile 'io.github.novacrypto:BIP39:0.1.9@jar'
     testCompile 'org.jmockit:jmockit:1.38'
 }
+
+publish {
+    userOrg = 'lhalcyon'//bintray.com用户名
+    groupId = 'com.lhalcyon'//jcenter上的路径
+    artifactId = 'bip32'//项目名称
+    publishVersion = '1.0.0'//版本号
+    desc = 'BIP32'
+    website = 'https://lhalcyon.com'
+}
+
